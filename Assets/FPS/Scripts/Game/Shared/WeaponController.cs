@@ -392,8 +392,8 @@ namespace Unity.FPS.Game
 
         bool TryShoot()
         {
-            if (m_CurrentAmmo >= 1f
-                && m_LastTimeShot + DelayBetweenShots < Time.time)
+            // TODO (Aleksey Samoylov) add unlimited ammo flag
+            if (m_LastTimeShot + DelayBetweenShots < Time.time)
             {
                 HandleShoot();
                 m_CurrentAmmo -= 1f;
