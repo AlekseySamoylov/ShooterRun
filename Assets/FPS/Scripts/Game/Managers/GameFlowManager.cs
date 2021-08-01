@@ -17,7 +17,7 @@ namespace Unity.FPS.Game
         public string WinSceneName = "StraightTunel";
 
         [Tooltip("Duration of delay before the fade-to-black, if winning")]
-        public float DelayBeforeFadeToBlack = 1f;
+        public float DelayBeforeFadeToBlack = 1;
 
         [Tooltip("Win game message")]
         public string WinGameMessage;
@@ -58,8 +58,8 @@ namespace Unity.FPS.Game
                 // See if it's time to load the end scene (after the delay)
                 if (Time.time >= m_TimeLoadEndGameScene)
                 {
-                    GameIsEnding = false;
                     SceneManager.LoadScene(m_SceneToLoad);
+                    GameIsEnding = false;
                 }
             }
         }
@@ -71,53 +71,42 @@ namespace Unity.FPS.Game
 
         void EndGame(bool win)
         {
-            m_SceneToLoad = "StraightTunel";
             // unlocks the cursor before leaving the scene, to be able to click buttons
-            // TODO Aleksei Samoilov uncomment it
-            //
             // Cursor.lockState = CursorLockMode.None;
             // Cursor.visible = true;
 
             // Remember that we need to load the appropriate end scene after a delay
-            // TODO Aleksei Samoilov uncomment it
             GameIsEnding = true;
             // EndGameFadeCanvasGroup.gameObject.SetActive(true);
-            // if (win)
-            // {
-            //     m_SceneToLoad = WinSceneName;
-            //     m_TimeLoadEndGameScene = Time.time + EndSceneLoadDelay + DelayBeforeFadeToBlack;
-            //
-            //     // play a sound on win
-            //     var audioSource = gameObject.AddComponent<AudioSource>();
-            //     audioSource.clip = VictorySound;
-            //     audioSource.playOnAwake = false;
-            //     audioSource.outputAudioMixerGroup = AudioUtility.GetAudioGroup(AudioUtility.AudioGroups.HUDVictory);
-            //     audioSource.PlayScheduled(AudioSettings.dspTime + DelayBeforeWinMessage);
-            //
-            //     // create a game message
-            //     //var message = Instantiate(WinGameMessagePrefab).GetComponent<DisplayMessage>();
-            //     //if (message)
-            //     //{
-            //     //    message.delayBeforeShowing = delayBeforeWinMessage;
-            //     //    message.GetComponent<Transform>().SetAsLastSibling();
-            //     //}
-            //
-            //     DisplayMessageEvent displayMessage = Events.DisplayMessageEvent;
-            //     displayMessage.Message = WinGameMessage;
-            //     displayMessage.DelayBeforeDisplay = DelayBeforeWinMessage;
-            //     EventManager.Broadcast(displayMessage);
-            // }
-            // else
-            // {
-            //     m_SceneToLoad = LoseSceneName;
-            //     m_TimeLoadEndGameScene = Time.time + EndSceneLoadDelay;
-            // }
+            if (win)
+            {
+                m_SceneToLoad = WinSceneName;
+                m_TimeLoadEndGameScene = Time.time + EndSceneLoadDelay + DelayBeforeFadeToBlack;
+
+                // play a sound on win
+                var audioSource = gameObject.AddComponent<AudioSource>();
+                audioSource.clip = VictorySound;
+                audioSource.playOnAwake = false;
+                audioSource.outputAudioMixerGroup = AudioUtility.GetAudioGroup(AudioUtility.AudioGroups.HUDVictory);
+                audioSource.PlayScheduled(AudioSettings.dspTime + DelayBeforeWinMessage);
+
+                DisplayMessageEvent displayMessage = Events.DisplayMessageEvent;
+                displayMessage.Message = WinGameMessage;
+                displayMessage.DelayBeforeDisplay = DelayBeforeWinMessage;
+                EventManager.Broadcast(displayMessage);
+            }
+            else
+            {
+                m_SceneToLoad = LoseSceneName;
+                m_TimeLoadEndGameScene = Time.time + EndSceneLoadDelay;
+            }
         }
 
         void OnDestroy()
         {
             EventManager.RemoveListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
             EventManager.RemoveListener<PlayerDeathEvent>(OnPlayerDeath);
+            EventManager.RemoveListener<FinishReachedEvent>(OnFinishReached);
         }
     }
 }
