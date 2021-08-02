@@ -20,7 +20,11 @@ namespace Unity.FPS.Game
         public float DelayBeforeFadeToBlack = 1;
 
         [Tooltip("Win game message")]
-        public string WinGameMessage;
+        public string WinGameMessage = "Mission completed";
+
+        [Tooltip("Loose game message")]
+        public string LooseGameMessage = "You died";
+
         [Tooltip("Duration of delay before the win message")]
         public float DelayBeforeWinMessage = 1f;
 
@@ -77,7 +81,7 @@ namespace Unity.FPS.Game
 
             // Remember that we need to load the appropriate end scene after a delay
             GameIsEnding = true;
-            // EndGameFadeCanvasGroup.gameObject.SetActive(true);
+            EndGameFadeCanvasGroup.gameObject.SetActive(true);
             if (win)
             {
                 m_SceneToLoad = WinSceneName;
@@ -88,17 +92,29 @@ namespace Unity.FPS.Game
                 audioSource.clip = VictorySound;
                 audioSource.playOnAwake = false;
                 audioSource.outputAudioMixerGroup = AudioUtility.GetAudioGroup(AudioUtility.AudioGroups.HUDVictory);
-                audioSource.PlayScheduled(AudioSettings.dspTime + DelayBeforeWinMessage);
+                audioSource.PlayScheduled(AudioSettings.dspTime);
 
                 DisplayMessageEvent displayMessage = Events.DisplayMessageEvent;
                 displayMessage.Message = WinGameMessage;
-                displayMessage.DelayBeforeDisplay = DelayBeforeWinMessage;
+                displayMessage.DelayBeforeDisplay = 0f;
                 EventManager.Broadcast(displayMessage);
             }
             else
             {
                 m_SceneToLoad = LoseSceneName;
                 m_TimeLoadEndGameScene = Time.time + EndSceneLoadDelay;
+                
+                var audioSource = gameObject.AddComponent<AudioSource>();
+                audioSource.clip = VictorySound;
+                audioSource.playOnAwake = false;
+                audioSource.outputAudioMixerGroup = AudioUtility.GetAudioGroup(AudioUtility.AudioGroups.Impact);
+                audioSource.PlayScheduled(AudioSettings.dspTime);
+
+                
+                DisplayMessageEvent displayMessage = Events.DisplayMessageEvent;
+                displayMessage.Message = LooseGameMessage;
+                displayMessage.DelayBeforeDisplay = 0f;
+                EventManager.Broadcast(displayMessage);
             }
         }
 
