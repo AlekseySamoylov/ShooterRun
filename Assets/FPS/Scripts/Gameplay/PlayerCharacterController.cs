@@ -132,6 +132,7 @@ namespace Unity.FPS.Gameplay
 
         const float k_JumpGroundingPreventionTime = 0.2f;
         const float k_GroundCheckDistanceInAir = 0.07f;
+        private bool secondJump = false;
 
         void Awake()
         {
@@ -317,6 +318,7 @@ namespace Unity.FPS.Gameplay
                     // jumping
                     if (IsGrounded && m_InputHandler.GetJumpInputDown())
                     {
+                        secondJump = false;
                         // force the crouch state to false
                         if (SetCrouchingState(false, false))
                         {
@@ -354,6 +356,23 @@ namespace Unity.FPS.Gameplay
                 // handle air movement
                 else
                 {
+                    if (m_InputHandler.GetJumpInputDown() && !secondJump)
+                    {
+                        secondJump = true;
+                        // then, add the jumpSpeed value upwards
+                        CharacterVelocity += Vector3.up * JumpForce;
+
+                        // play sound
+                        AudioSource.PlayOneShot(JumpSfx);
+
+                        // remember last time we jumped because we need to prevent snapping to ground for a short time
+                        m_LastTimeJumped = Time.time;
+                        HasJumpedThisFrame = true;
+
+                        // Force grounding to false
+                        IsGrounded = false;
+                        m_GroundNormal = Vector3.up;
+                    }
                     // add air acceleration
                     CharacterVelocity += worldspaceMoveInput * AccelerationSpeedInAir * Time.deltaTime;
 
