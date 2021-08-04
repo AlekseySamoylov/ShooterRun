@@ -108,11 +108,11 @@ namespace Unity.FPS.Gameplay
         {
             get
             {
-                if (m_WeaponsManager.IsAiming)
-                {
-                    return AimingRotationMultiplier;
-                }
-
+                // if (m_WeaponsManager.IsAiming)
+                // {
+                //     return AimingRotationMultiplier;
+                // }
+        
                 return 1f;
             }
         }
@@ -120,7 +120,7 @@ namespace Unity.FPS.Gameplay
         Health m_Health;
         PlayerInputHandler m_InputHandler;
         CharacterController m_Controller;
-        PlayerWeaponsManager m_WeaponsManager;
+        // PlayerWeaponsManager m_WeaponsManager;
         Actor m_Actor;
         Vector3 m_GroundNormal;
         Vector3 m_CharacterVelocity;
@@ -152,9 +152,9 @@ namespace Unity.FPS.Gameplay
             DebugUtility.HandleErrorIfNullGetComponent<PlayerInputHandler, PlayerCharacterController>(m_InputHandler,
                 this, gameObject);
 
-            m_WeaponsManager = GetComponent<PlayerWeaponsManager>();
-            DebugUtility.HandleErrorIfNullGetComponent<PlayerWeaponsManager, PlayerCharacterController>(
-                m_WeaponsManager, this, gameObject);
+            // m_WeaponsManager = GetComponent<PlayerWeaponsManager>();
+            // DebugUtility.HandleErrorIfNullGetComponent<PlayerWeaponsManager, PlayerCharacterController>(
+            //     m_WeaponsManager, this, gameObject);
 
             m_Health = GetComponent<Health>();
             DebugUtility.HandleErrorIfNullGetComponent<Health, PlayerCharacterController>(m_Health, this, gameObject);
@@ -222,7 +222,7 @@ namespace Unity.FPS.Gameplay
             IsDead = true;
 
             // Tell the weapons manager to switch to a non-existing weapon in order to lower the weapon
-            m_WeaponsManager.SwitchToWeaponIndex(-1, true);
+            // m_WeaponsManager.SwitchToWeaponIndex(-1, true);
 
             EventManager.Broadcast(Events.PlayerDeathEvent);
         }
