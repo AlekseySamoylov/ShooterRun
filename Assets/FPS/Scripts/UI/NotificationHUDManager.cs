@@ -17,7 +17,7 @@ namespace Unity.FPS.UI
             PlayerWeaponsManager playerWeaponsManager = FindObjectOfType<PlayerWeaponsManager>();
             DebugUtility.HandleErrorIfNullFindObject<PlayerWeaponsManager, NotificationHUDManager>(playerWeaponsManager,
                 this);
-            playerWeaponsManager.OnAddedWeapon += OnPickupWeapon;
+            // playerWeaponsManager.OnAddedWeapon += OnPickupWeapon;
 
             // Jetpack jetpack = FindObjectOfType<Jetpack>();
             // DebugUtility.HandleErrorIfNullFindObject<Jetpack, NotificationHUDManager>(jetpack, this);
